@@ -1,0 +1,6 @@
+apiVersion: v2
+name: rollout-demo
+description: Three-workload demo chart used by the rolling-update planner sample
+type: application
+version: 2.0.0
+appVersion: "2.0.0"

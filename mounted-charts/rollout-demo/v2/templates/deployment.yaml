@@ -1,0 +1,41 @@
+{{- range $workload := .Values.workloads }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-{{ $workload.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: rollout-demo
+    app.kubernetes.io/component: {{ $workload.name }}
+spec:
+  replicas: {{ $workload.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rollout-demo
+      app.kubernetes.io/component: {{ $workload.name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rollout-demo
+        app.kubernetes.io/component: {{ $workload.name }}
+      annotations:
+        rollout-demo/revision: {{ $.Values.imageTag | quote }}
+    spec:
+      {{- with $workload.initImage }}
+      initContainers:
+        - name: prepare
+          image: {{ . | quote }}
+          resources:
+            requests:
+              cpu: {{ $workload.initCpu | quote }}
+              memory: {{ $workload.initMemory | quote }}
+      {{- end }}
+      containers:
+        - name: {{ $workload.name }}
+          image: "{{ $workload.repository }}:{{ $.Values.imageTag }}"
+          resources:
+            requests:
+              cpu: {{ $workload.cpu | quote }}
+              memory: {{ $workload.memory | quote }}
+{{- end }}

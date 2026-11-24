@@ -1,0 +1,1 @@
+Rendered {{ len .Values.workloads }} rollout-demo Deployments in namespace {{ .Release.Namespace }}.

@@ -1,0 +1,40 @@
+# New revision of the four demo workloads, rendered by `helm template`.
+# Current (old) Deployments are submitted in the request and paired by
+# (metadata.namespace, metadata.name).
+#
+# Sample arithmetic (see examples/rollout-demo.request.json):
+#   other_used 50m/64Mi, quota 500m/640Mi
+#   planned old totals 200m/256Mi -> starting usage 250m/320Mi
+#   planned new totals 400m/512Mi -> final usage    450m/576Mi (fits)
+# Applying the three planned Deployments one at a time in YAML order gets stuck
+# on search: 300m -> 400m -> 550m (> 500m).  The plan batches api + search
+# first (peak 500m) and upgrades worker afterwards (peak 500m).
+#
+# `report` is out of scope: its new Pod template declares an init container, so
+# the planner reports it under `ignored` rather than guessing its cost.
+imageTag: "2.0.0"
+
+workloads:
+  - name: api
+    replicas: 1
+    repository: registry.local/rollout-demo/api
+    cpu: "50m"
+    memory: "64Mi"
+  - name: worker
+    replicas: 1
+    repository: registry.local/rollout-demo/worker
+    cpu: "150m"
+    memory: "192Mi"
+  - name: search
+    replicas: 1
+    repository: registry.local/rollout-demo/search
+    cpu: "200m"
+    memory: "256Mi"
+  - name: report
+    replicas: 1
+    repository: registry.local/rollout-demo/report
+    cpu: "50m"
+    memory: "64Mi"
+    initImage: registry.local/rollout-demo/report-prepare:2.0.0
+    initCpu: "100m"
+    initMemory: "128Mi"

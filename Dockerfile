@@ -1,4 +1,4 @@
-# Runtime image for the shared-values cleanup service.
+# Runtime image for the values-cleanup + rollout-planning service.
 # Helm 3 is installed because the service shells out to `helm template`.
 FROM python:3.11-slim
 

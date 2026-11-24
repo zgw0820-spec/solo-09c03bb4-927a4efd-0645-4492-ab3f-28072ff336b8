@@ -1,0 +1,15 @@
+{
+  "current_deployments_yaml": "# Current (old) Deployments, as they run before the rollout. Namespace + name\n# pair each one with the Deployment rendered from the new chart.\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: rollout-demo-api\n  namespace: rollout-demo\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app.kubernetes.io/name: rollout-demo\n      app.kubernetes.io/component: api\n  template:\n    metadata:\n      labels:\n        app.kubernetes.io/name: rollout-demo\n        app.kubernetes.io/component: api\n    spec:\n      containers:\n        - name: api\n          image: registry.local/rollout-demo/api:1.0.0\n          resources:\n            requests:\n              cpu: 50m\n              memory: 64Mi\n---\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: rollout-demo-worker\n  namespace: rollout-demo\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app.kubernetes.io/name: rollout-demo\n      app.kubernetes.io/component: worker\n  template:\n    metadata:\n      labels:\n        app.kubernetes.io/name: rollout-demo\n        app.kubernetes.io/component: worker\n    spec:\n      containers:\n        - name: worker\n          image: registry.local/rollout-demo/worker:1.0.0\n          resources:\n            requests:\n              cpu: 50m\n              memory: 64Mi\n---\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: rollout-demo-report\n  namespace: rollout-demo\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app.kubernetes.io/name: rollout-demo\n      app.kubernetes.io/component: report\n  template:\n    metadata:\n      labels:\n        app.kubernetes.io/name: rollout-demo\n        app.kubernetes.io/component: report\n    spec:\n      initContainers:\n        - name: prepare\n          image: registry.local/rollout-demo/report-prepare:1.0.0\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n      containers:\n        - name: report\n          image: registry.local/rollout-demo/report:1.0.0\n          resources:\n            requests:\n              cpu: 50m\n              memory: 64Mi\n---\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: rollout-demo-search\n  namespace: rollout-demo\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app.kubernetes.io/name: rollout-demo\n      app.kubernetes.io/component: search\n  template:\n    metadata:\n      labels:\n        app.kubernetes.io/name: rollout-demo\n        app.kubernetes.io/component: search\n    spec:\n      containers:\n        - name: search\n          image: registry.local/rollout-demo/search:1.0.0\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n",
+  "chart_dir": "/workspace/mounted-charts/rollout-demo/v2",
+  "values_path": "/workspace/mounted-charts/rollout-demo/v2/values.yaml",
+  "release_name": "rollout-demo",
+  "namespace": "rollout-demo",
+  "quota": {
+    "cpu": "500m",
+    "memory": "640Mi"
+  },
+  "other_used": {
+    "cpu": "50m",
+    "memory": "64Mi"
+  }
+}
