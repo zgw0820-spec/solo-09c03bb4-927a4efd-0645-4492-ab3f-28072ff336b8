@@ -1,0 +1,37 @@
+replicaCount: 1
+
+image:
+  repository: registry.local/frontend/payment-web
+  tag: "3.0.7"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: nginx
+  hosts:
+    - host: payment.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+podAnnotations: {}
+
+securityContext:
+  runAsNonRoot: false
+  runAsUser: 0
+
+config:
+  cacheTtl: 60
+  apiBase: https://api.example.com

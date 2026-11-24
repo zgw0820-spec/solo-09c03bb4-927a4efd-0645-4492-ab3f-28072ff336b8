@@ -1,0 +1,15 @@
+{
+  "values_override_path": "/workspace/overrides/orders-api.values.yaml",
+  "release_name": "platform-rel",
+  "namespace": "platform",
+  "versions": [
+    {
+      "label": "production-v1",
+      "chart_dir": "/workspace/mounted-charts/orders-api/v1"
+    },
+    {
+      "label": "staging-v2",
+      "chart_dir": "/workspace/mounted-charts/orders-api/v2"
+    }
+  ]
+}

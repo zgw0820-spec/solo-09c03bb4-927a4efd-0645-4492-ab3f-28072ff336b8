@@ -1,0 +1,37 @@
+replicaCount: 2
+
+image:
+  repository: registry.local/platform/orders-api
+  tag: "1.4.2"
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+nameOverride: ""
+tolerations: []
+
+service:
+  type: ClusterIP
+  port: 8080
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+podSecurityContext:
+  runAsNonRoot: false
+  runAsUser: 0
+
+config:
+  logLevel: info
+  features:
+    batchExport: false

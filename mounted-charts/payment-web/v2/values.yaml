@@ -1,0 +1,50 @@
+replicaCount: 1
+
+image:
+  repository: registry.local/frontend/payment-web
+  tag: "4.0.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: nginx
+  hosts:
+    - host: payment.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+podAnnotations: {}
+
+# v2 changed the defaults: hardened security context is now built in.
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+
+# v2 additions
+nodeSelector:
+  disktype: ssd
+
+configMap:
+  create: false
+  name: ""
+
+serviceMonitor:
+  enabled: false
+  interval: 30s
+
+config:
+  cacheTtl: 60
+  apiBase: https://api.example.com

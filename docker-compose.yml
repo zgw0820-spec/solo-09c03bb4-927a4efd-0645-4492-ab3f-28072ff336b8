@@ -1,0 +1,18 @@
+# Start with: docker compose up --build
+# Swagger UI (with the two prefilled examples): http://localhost:8000/docs
+services:
+  values-cleanup-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: helm-values-cleanup:1.0.0
+    ports:
+      - "8000:8000"
+    volumes:
+      # Simulates the mounted directory containing charts and overrides.
+      # Read-only: the service never writes back to the source data.
+      - ./mounted-charts:/workspace/mounted-charts:ro
+      - ./overrides:/workspace/overrides:ro
+    environment:
+      PYTHONUNBUFFERED: "1"
+    restart: unless-stopped

@@ -1,0 +1,42 @@
+# Shared values override for payment-web
+# Used by BOTH the legacy chart (production, v1.8.x) and the new chart (staging, v2.0.x).
+replicaCount: 2                                     # effective
+
+image:
+  repository: registry.local/frontend/payment-web   # == chart default in both versions (redundant)
+  tag: "3.0.7-patch.2"                              # effective
+  pullPolicy: IfNotPresent                          # == chart default (redundant)
+
+service:
+  type: ClusterIP                                   # == chart default (redundant)
+  port: 8080                                        # effective
+
+ingress:
+  enabled: false                                    # == chart default, renders nothing (redundant)
+  className: nginx                                  # default too, but unreachable while enabled=false
+
+resources:
+  requests:
+    cpu: 50m                                        # == chart default (redundant)
+    memory: 64Mi
+  limits:
+    cpu: 300m                                       # effective
+    memory: 256Mi                                   # == chart default (redundant)
+
+# Cross-version trap: v2 flipped these defaults (true / 10001); production needs the old values.
+securityContext:
+  runAsNonRoot: false
+  runAsUser: 0
+
+# Cross-version trap: nodeSelector only exists on v2 (defaults to disktype=ssd).
+# On v1 this key is ignored by the templates, so on the surface it looks removable —
+# deleting it changes the v2 rendered Deployment, so it must be kept.
+nodeSelector:
+  disktype: hdd
+
+podAnnotations:
+  checksum/legacy: "fixed-2026-11-23"               # effective (rendered on both versions)
+
+config:
+  cacheTtl: 60                                      # == chart default (redundant)
+  apiBase: https://api.example.com                  # == chart default (redundant)

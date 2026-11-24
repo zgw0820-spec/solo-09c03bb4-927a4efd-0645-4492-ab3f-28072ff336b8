@@ -1,0 +1,6 @@
+apiVersion: v2
+name: orders-api
+description: Orders API service chart (new v2, staging)
+type: application
+version: 2.1.0
+appVersion: "2.1.0"

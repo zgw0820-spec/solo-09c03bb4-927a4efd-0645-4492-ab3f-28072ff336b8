@@ -1,0 +1,43 @@
+# Shared values override for orders-api
+# Used by BOTH the legacy chart (production, v1.4.x) and the new chart (staging, v2.1.x).
+# Goal: remove keys that only restate chart defaults, without changing rendered manifests.
+nameOverride: ""                                    # == chart default in both versions (redundant)
+
+replicaCount: 3
+
+image:
+  repository: registry.local/platform/orders-api   # == chart default in both versions (redundant)
+  tag: "1.4.2-hotfix.3"                             # effective: overrides the chart tag
+  pullPolicy: IfNotPresent                          # == chart default in both versions (redundant)
+  pullSecrets: []                                   # == chart default, renders nothing (redundant)
+
+tolerations: []                                     # == chart default, renders nothing (redundant)
+
+service:
+  type: ClusterIP                                   # == chart default (redundant)
+  port: 9090                                        # effective
+
+resources:
+  requests:
+    cpu: 250m                                       # effective
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+autoscaling:
+  enabled: true                                     # effective (HPA rendered on v2)
+  minReplicas: 2                                    # == chart default (redundant once enabled)
+  maxReplicas: 20                                   # effective
+  targetCPUUtilizationPercentage: 80                # == chart default (redundant)
+
+# Cross-version trap: v1 defaults are non-root=false/uid=0, v2 defaults flipped to true/10001.
+# These overrides keep production behavior, so they must NOT be removed.
+podSecurityContext:
+  runAsNonRoot: false
+  runAsUser: 0
+
+config:
+  logLevel: debug                                   # effective
+  features:
+    batchExport: true                               # effective
